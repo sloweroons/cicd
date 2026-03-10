@@ -7,7 +7,7 @@ int opaddition(int op1, int op2)
 
 int opsubtraction(int op1, int op2)
 {
-    return op1 + op2;
+    return op1 - op2;
 }
 
 int opmultiplication(int op1, int op2)
