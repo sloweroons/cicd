@@ -22,11 +22,24 @@ jobs:
         run: |
           ./check_operations
 
+  static-analysis:
+    name: Static analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Install splint
+        run: sudo apt install splint
+
+      - name: Run splint
+        run: splint --compdef --exportlocal simplecalculator.c operations.c
+
   building-and-delivery:
     name: Build and delivery
     permissions:
       contents: write
-    needs: [unit-test]
+    needs: [unit-test, static-analysis]
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository code
@@ -36,9 +49,12 @@ jobs:
         run: |
           gcc operations.c simplecalculator.c -o simplecalculator
 
+      - name: Create neptun.txt
+        run: echo "I53LZ8" > neptun.txt
+
       - name: Creating tar.gz
         run: |
-          tar -czvf simplecalculator.tar.gz simplecalculator
+          tar -czvf simplecalculator.tar.gz simplecalculator neptun.txt
 
       - uses: marvinpinto/action-automatic-releases@latest
         with:
